@@ -2,5 +2,5 @@ package Vievs
 
 import tornadofx.App
 
-class WADApp() : App(WADProjectViev::class)  {
+class WADApp() : App(WADProjectsViev::class)  {
 }
