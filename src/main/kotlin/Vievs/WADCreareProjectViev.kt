@@ -66,7 +66,7 @@ class WADCreateProjectViev() : Fragment() {
                         directory.text = "c:\\wad\\${name.text}"
                     }
                     val dao = WADProjectsDao()
-                    if(name.text in dao.getWADProjectsName("all_projects")){
+                    if(name.text in dao.getWADProjectsName("all_projects").first){
                         errorText.set(0, Pair("A project with that name already exists. The data will be lost",1))
                     }
                     statusUpdating(errorText);
@@ -169,18 +169,18 @@ class WADCreateProjectViev() : Fragment() {
                     var wadProject = WADProject(0, name.text, domenName.text, to.text, from.text, directory.text)
                     val dao = WADProjectsDao()
                     dao.addProject(wadProject, "all_projects")
-                    dao.addProject(wadProject, "open_projects")
+
                     val dir = File(directory.text)
                     dir.mkdirs()
                     WADStatus.stat.createProjectStatusCode = 2
-                    projectsController.createProject()
+                    projectsController.createProjectViev()
                     close()
                 }
             }
             button("Cancel") {
                 setOnAction {
                     WADStatus.stat.createProjectStatusCode = 5
-                    projectsController.createProject()
+                    projectsController.createProjectViev()
                     close()
                 }
             }

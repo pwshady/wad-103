@@ -8,8 +8,8 @@ class WADProjectTopViev() : View() {
     val  projectsController : WADProjectsController by inject()
     override val root: Parent = menubar {
         menu("File") {
-            item("New project").action { projectsController.createProject() }
-            item("Open project").action { projectsController.openProject() }
+            item("New project").action { projectsController.createProjectViev() }
+            item("Open project").action { projectsController.openProjectViev() }
             menu ("Stop"){  }
             menu ("Stop and close"){  }
             item("New project")

@@ -10,7 +10,7 @@ import tornadofx.*
 class WADProjectsViev() : View() {
     init {
         val dao = WADProjectsDao()
-        WADStatus.stat.openProjectList = dao.getWADProjects("open_projects").toMutableList()
+        WADStatus.stat.openProjectList = dao.getWADProjects("open_projects").first.toMutableList().observable()
     }
     override val root: Parent = borderpane {
         var topViev = WADProjectTopViev()

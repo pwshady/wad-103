@@ -18,7 +18,7 @@ fun main(){
 }
 
 class WADProjectsController() : Controller(){
-    fun createProject()
+    fun createProjectViev()
     {
         when (WADStatus.stat.createProjectStatusCode){
             0 -> {
@@ -36,10 +36,10 @@ class WADProjectsController() : Controller(){
         }
     }
 
-    fun openProject()
+    fun openProjectViev()
     {
         val dao = WADProjectsDao()
-        WADStatus.stat.openProjectListName = dao.getWADProjectsName("all_projects").toMutableList().observable()
+        WADStatus.stat.openProjectListName = dao.getWADProjectsName("all_projects").first.toMutableList().observable()
         when (WADStatus.stat.openProjectStatusCode){
 
 
@@ -49,6 +49,17 @@ class WADProjectsController() : Controller(){
                 println(WADStatus.stat.openProjectListName)
             }
             1 -> println("oop")
+        }
+    }
+
+    fun openProject(text : String) : Int{
+        val dao = WADProjectsDao()
+        val result = dao.getWADProject(text, "all_project")
+        if (result.second == 0){
+            return dao.addProject(result.first, "open_project")
+            WADStatus.stat.openProjectList.add(result.first)
+        } else {
+            return result.second
         }
     }
 }

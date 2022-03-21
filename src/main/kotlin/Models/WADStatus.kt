@@ -7,7 +7,7 @@ class WADStatus {
     object stat{
         var createProjectStatusCode : Int = 0
         var openProjectStatusCode : Int = 0
-        var openProjectList = mutableListOf<WADProject>()
+        var openProjectList = mutableListOf<WADProject>().observable()
         var openProjectListName = mutableListOf<String>().observable()
     }
     object ex{
