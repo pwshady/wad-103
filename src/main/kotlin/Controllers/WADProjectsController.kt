@@ -54,13 +54,22 @@ class WADProjectsController() : Controller(){
 
     fun openProject(text : String) : Int{
         val dao = WADProjectsDao()
-        val result = dao.getWADProject(text, "all_project")
+        val result = dao.getWADProject(text, "all_projects")
         if (result.second == 0){
-            return dao.addProject(result.first, "open_project")
+            return dao.addProject(result.first, "open_projects")
             WADStatus.stat.openProjectList.add(result.first)
         } else {
             return result.second
         }
+    }
+
+    fun closeProject(text: String) : Int{
+        val dao = WADProjectsDao()
+        val result = dao.deleteWADProject(text, "open_projects")
+        if (result == 0){
+            WADStatus.stat.openProjectList.removeAll{ it.name == text}
+        }
+        return result
     }
 }
 

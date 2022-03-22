@@ -128,4 +128,20 @@ class WADProjectsDao {
         }
         return Pair(wad, errorCode)
     }
+
+    fun deleteWADProject(name: String, tableName: String) : Int
+    {
+        var errorCode = 0
+        try {
+            Class.forName(driver)
+            val connection = DriverManager.getConnection(url, user, pass)
+            val stmt: PreparedStatement = connection.prepareStatement("delete from ${tableName} where name=?")
+            stmt.setString(1, name)
+            println("ll")
+            stmt.executeUpdate()
+        } catch (e : Exception){
+            errorCode = 1
+        }
+        return errorCode
+    }
 }

@@ -17,7 +17,7 @@ import java.time.LocalDate
 import java.util.*
 
 class WADCreateProjectViev() : Fragment() {
-    val  projectsController : WADProjectsController by inject()
+    val  wadProjectsController : WADProjectsController by inject()
     override val root: Parent = form {
         var dirFlag = true
         var name : TextField by singleAssign()
@@ -173,14 +173,14 @@ class WADCreateProjectViev() : Fragment() {
                     val dir = File(directory.text)
                     dir.mkdirs()
                     WADStatus.stat.createProjectStatusCode = 2
-                    projectsController.createProjectViev()
+                    wadProjectsController.createProjectViev()
                     close()
                 }
             }
             button("Cancel") {
                 setOnAction {
                     WADStatus.stat.createProjectStatusCode = 5
-                    projectsController.createProjectViev()
+                    wadProjectsController.createProjectViev()
                     close()
                 }
             }

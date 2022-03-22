@@ -8,7 +8,7 @@ import jdbc.WADProject
 import tornadofx.*
 
 class WADProjectCenterViev() : View() {
-    val projectsController: WADProjectsController by inject()
+    val  wadProjectsController : WADProjectsController by inject()
     override val root: Parent = hbox {
         var tp: TabPane by singleAssign()
         tp = tabpane() {}
@@ -21,7 +21,12 @@ class WADProjectCenterViev() : View() {
                     }
                 }
                 if(!flag){
-                    tp.tab(WADStatus.stat.openProjectList[i].name) {  }
+                    tp.tab(WADStatus.stat.openProjectList[i].name) {
+                        this.setOnClosed {
+                            wadProjectsController.closeProject(this.text)
+                            println(WADStatus.stat.openProjectList)
+                        }
+                    }
                 }
             }
         }
