@@ -22,6 +22,9 @@ class WADProjectCenterViev() : View() {
                 }
                 if(!flag){
                     tp.tab(WADStatus.stat.openProjectList[i].name) {
+                        borderpane {
+                            center<WADProjectViev>()
+                        }
                         this.setOnClosed {
                             wadProjectsController.closeProject(this.text)
                             println(WADStatus.stat.openProjectList)
@@ -33,6 +36,7 @@ class WADProjectCenterViev() : View() {
         setTab()
         WADStatus.stat.openProjectList.onChange {
             setTab()
+            wadProjectsController.reCreateOpenProjectListName()
         }
 
         button("hhh").action{

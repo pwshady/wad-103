@@ -9,6 +9,7 @@ import jdbc.WADProjectsDao
 import tornadofx.Controller
 import tornadofx.launch
 import tornadofx.observable
+import java.text.BreakIterator
 import java.util.*
 
 fun main(){
@@ -40,24 +41,37 @@ class WADProjectsController() : Controller(){
     {
         val dao = WADProjectsDao()
         WADStatus.stat.openProjectListName = dao.getWADProjectsName("all_projects").first.toMutableList().observable()
-        when (WADStatus.stat.openProjectStatusCode){
-
-
-            0 -> {
-                find<WADOpenProjectsViev>().openWindow(owner = null)
-                WADStatus.stat.openProjectStatusCode = 1
-                println(WADStatus.stat.openProjectListName)
+        if (reCreateOpenProjectListName() == 0){
+            when (WADStatus.stat.openProjectStatusCode){
+                0 -> {
+                    find<WADOpenProjectsViev>().openWindow(owner = null)
+                    WADStatus.stat.openProjectStatusCode = 1
+                }
+                1 -> println("oop")
             }
-            1 -> println("oop")
         }
+    }
+
+    fun reCreateOpenProjectListName() : Int{
+        var errorCode = 0
+        try {
+            for (name in WADStatus.stat.openProjectList.map { it.name }){
+                WADStatus.stat.openProjectListName.removeAll{it == name}
+            }
+        } catch (e : Exception){
+            errorCode = 1
+        }
+        return errorCode
     }
 
     fun openProject(text : String) : Int{
         val dao = WADProjectsDao()
-        val result = dao.getWADProject(text, "all_projects")
+        var result = dao.getWADProject(text, "all_projects")
         if (result.second == 0){
-            return dao.addProject(result.first, "open_projects")
+            dao.addProject(result.first, "open_projects")
             WADStatus.stat.openProjectList.add(result.first)
+            reCreateOpenProjectListName()
+            return 0
         } else {
             return result.second
         }

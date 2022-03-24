@@ -169,9 +169,9 @@ class WADCreateProjectViev() : Fragment() {
                     var wadProject = WADProject(0, name.text, domenName.text, to.text, from.text, directory.text)
                     val dao = WADProjectsDao()
                     dao.addProject(wadProject, "all_projects")
-
                     val dir = File(directory.text)
                     dir.mkdirs()
+                    wadProjectsController.openProject(wadProject.name)
                     WADStatus.stat.createProjectStatusCode = 2
                     wadProjectsController.createProjectViev()
                     close()
@@ -187,11 +187,9 @@ class WADCreateProjectViev() : Fragment() {
         }
 
     }
-}
 
-class CreateProjectController() : Controller(){
-    var mod : Boolean
-    init {
-        mod = false
+    override fun onUndock() {
+        WADStatus.stat.createProjectStatusCode = 0
     }
+
 }

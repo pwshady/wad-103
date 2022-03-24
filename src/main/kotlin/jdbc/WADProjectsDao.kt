@@ -109,20 +109,22 @@ class WADProjectsDao {
             val stmt: PreparedStatement = connection.prepareStatement("select * from ${tableName} where name=? limit 1")
             stmt.setString(1, name)
             val rs = stmt.executeQuery()
-            wad = WADProject(
-                rs.getInt(1),
-                rs.getString(2),
-                rs.getString(3),
-                rs.getString(4),
-                rs.getString(5),
-                rs.getString(6),
-                rs.getInt(7),
-                rs.getString(8),
-                rs.getInt(9),
-                rs.getString(10),
-                rs.getInt(11),
-                rs.getInt(12)
-            )
+            while (rs.next()){
+                wad = WADProject(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getString(5),
+                    rs.getString(6),
+                    rs.getInt(7),
+                    rs.getString(8),
+                    rs.getInt(9),
+                    rs.getString(10),
+                    rs.getInt(11),
+                    rs.getInt(12)
+                )
+            }
         } catch (e : Exception){
             errorCode = 1
         }
