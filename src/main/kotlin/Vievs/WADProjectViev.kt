@@ -1,16 +1,54 @@
 package Vievs
 
+import Models.ProjectStatus
+import Models.WADStatus
+import javafx.application.Platform
 import javafx.collections.ObservableList
 import javafx.geometry.Side
 import javafx.scene.Parent
+import javafx.scene.control.TextField
+import jdbc.WADProject
 import tornadofx.*
 import java.awt.Image
+import kotlin.concurrent.thread
 
-class WADProjectViev() : Fragment() {
+class WADProjectViev(wadProject: WADProject) : Fragment() {
     override val root: Parent = vbox {
+        var textFieldDomenName : TextField by singleAssign()
         hbox {
-            button("jj")
-            imageview("https://i.imgur.com/DuFZ6PQb.jpg")
+            WADStatus.stat.wadProjectList.add(Pair(wadProject,ProjectStatus()))
+            label("Domen name: "){
+                this.style{
+                    //this.backgroundColor += c("red")
+                }
+            }
+            textFieldDomenName = textfield {
+                this.disableProperty().set(true)
+            }
+            textFieldDomenName.text = wadProject.domenName
+            checkbox("Only url") {  }
+            button("Start"){
+
+            }
+            button("Stop"){
+
+            }
+            progressbar {
+                thread {
+                    var i = 0
+                    while (true){
+                        Platform.runLater{ progress = i.toDouble() /100}
+                        Thread.sleep(100)
+                        i ++
+                        if (i == 100){
+                            i = 0
+                        }
+                    }
+                }
+            }
+            label("Status:")
+            label("Stop")
+
         }
         drawer (side = Side.BOTTOM, multiselect = false) {
             item("files", expanded = true){
