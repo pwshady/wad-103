@@ -1,10 +1,13 @@
 package Controllers
 
+import Models.ProjectStatus
+import Models.RunStatus
 import Models.WADSettings
 import Models.WADStatus
 import Vievs.WADApp
 import Vievs.WADCreateProjectViev
 import Vievs.WADOpenProjectsViev
+import jdbc.WADProject
 import jdbc.WADProjectsDao
 import tornadofx.Controller
 import tornadofx.launch
@@ -15,6 +18,7 @@ import java.util.*
 fun main(){
     val properties = Properties()
     properties.load(Any::class.java.getResourceAsStream("/WAD.properties"))
+    //WADStatus.stat.wadProjectList = mutableListOf<Pair<WADProject,WADStatus>>().observable()
     launch<WADApp>()
 }
 
@@ -82,9 +86,11 @@ class WADProjectsController() : Controller(){
         val result = dao.deleteWADProject(text, "open_projects")
         if (result == 0){
             WADStatus.stat.openProjectList.removeAll{ it.name == text}
+            WADStatus.stat.wadProjectList.removeAll{ it.projectName == text}
         }
         return result
     }
+
 }
 
 

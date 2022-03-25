@@ -1,6 +1,7 @@
 package Vievs
 
 import Controllers.WADProjectsController
+import Models.ProjectStatus
 import Models.WADStatus
 import javafx.scene.Parent
 import javafx.scene.control.TabPane
@@ -22,6 +23,7 @@ class WADProjectCenterViev() : View() {
                 }
                 if(!flag){
                     tp.tab(WADStatus.stat.openProjectList[i].name) {
+                        WADStatus.stat.wadProjectList.add(ProjectStatus(WADStatus.stat.openProjectList[i].name))
                         this += WADProjectViev(WADStatus.stat.openProjectList[i])
                         this.setOnClosed {
                             wadProjectsController.closeProject(this.text)

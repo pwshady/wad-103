@@ -9,7 +9,8 @@ class WADStatus {
         var openProjectStatusCode : Int = 0
         var openProjectList = mutableListOf<WADProject>().observable()
         var openProjectListName = mutableListOf<String>().observable()
-        var wadProjectList = mutableListOf<Pair<WADProject, ProjectStatus>>().observable()
+        var wadProjectList = mutableListOf<ProjectStatus>().observable()
+        var wadProjectRunList = mutableListOf<RunStatus>().observable()
     }
     object ex{
         var dbException : Int = 0

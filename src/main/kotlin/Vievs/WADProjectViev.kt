@@ -1,22 +1,33 @@
 package Vievs
 
+import Controllers.WADJob
+import Controllers.WADProjectController
+import Controllers.WADProjectsController
 import Models.ProjectStatus
+import Models.RunStatus
 import Models.WADStatus
 import javafx.application.Platform
 import javafx.collections.ObservableList
 import javafx.geometry.Side
 import javafx.scene.Parent
+import javafx.scene.control.Button
+import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import jdbc.WADProject
+import kotlinx.coroutines.*
 import tornadofx.*
-import java.awt.Image
 import kotlin.concurrent.thread
 
 class WADProjectViev(wadProject: WADProject) : Fragment() {
+    val  wadProjectController : WADProjectController by inject()
     override val root: Parent = vbox {
         var textFieldDomenName : TextField by singleAssign()
+        var statusLabel : Label by singleAssign()
+        var buttonStart : Button by singleAssign()
+        var buttonStop : Button by singleAssign()
+        var wadJob = WADJob(wadProject)
+        wadJob.main()
         hbox {
-            WADStatus.stat.wadProjectList.add(Pair(wadProject,ProjectStatus()))
             label("Domen name: "){
                 this.style{
                     //this.backgroundColor += c("red")
@@ -27,27 +38,43 @@ class WADProjectViev(wadProject: WADProject) : Fragment() {
             }
             textFieldDomenName.text = wadProject.domenName
             checkbox("Only url") {  }
-            button("Start"){
-
+            buttonStart = button("Start"){
+                action {
+                    wadProjectController.sendMessageProject(wadProject.name,true,1)
+                    buttonStart.disableProperty().set(true)
+                    buttonStop.disableProperty().set(false)
+                }
             }
-            button("Stop"){
+            buttonStop = button("Stop"){
+                action {
+                    wadProjectController.sendMessageProject(wadProject.name,true,0)
+                    buttonStart.disableProperty().set(false)
+                    buttonStop.disableProperty().set(true)
+                }
+            }
+            button("ttt") {
+                action {
+                    println(WADStatus.stat.wadProjectList)
 
+                }
             }
             progressbar {
                 thread {
                     var i = 0
                     while (true){
-                        Platform.runLater{ progress = i.toDouble() /100}
-                        Thread.sleep(100)
-                        i ++
-                        if (i == 100){
+                        Platform.runLater{ progress = i.toDouble() /10}
+                        Thread.sleep(1000)
+                        if(WADStatus.stat.wadProjectList.last{it.projectName == wadProject.name}.run!!){
+                            i++
+                        }
+                        if (i == 10){
                             i = 0
                         }
                     }
                 }
             }
             label("Status:")
-            label("Stop")
+            statusLabel = label("Stop")
 
         }
         drawer (side = Side.BOTTOM, multiselect = false) {
@@ -72,6 +99,7 @@ class WADProjectViev(wadProject: WADProject) : Fragment() {
 
             }
         }
+
     }
 }
 
