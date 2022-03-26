@@ -64,7 +64,7 @@ class WADProjectViev(wadProject: WADProject) : Fragment() {
                     while (true){
                         Platform.runLater{ progress = i.toDouble() /10}
                         Thread.sleep(1000)
-                        if(WADStatus.stat.wadProjectList.last{it.projectName == wadProject.name}.run!!){
+                        if(WADStatus.stat.wadProjectList.last{it.projectName == wadProject.name}.run){
                             i++
                         }
                         if (i == 10){
