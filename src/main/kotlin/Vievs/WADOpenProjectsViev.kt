@@ -15,6 +15,22 @@ class WADOpenProjectsViev : Fragment() {
         var listViev : ListView<String> by singleAssign()
         listViev = listview(WADStatus.stat.openProjectListName){
             selectionModel.selectionMode = SelectionMode.SINGLE
+            contextmenu {
+                item("Open").action {
+                    if (listViev.selectedItem != null){
+                        if (wadProjectsController.openProject(listViev.selectedItem!!) == 0){
+                            WADStatus.stat.openProjectListName
+                        }
+                    }
+                }
+                item("Delete").action {
+                    if (listViev.selectedItem != null){
+                        if (wadProjectsController.deleteProject(listViev.selectedItem!!) == 0){
+                            WADStatus.stat.openProjectListName
+                        }
+                    }
+                }
+            }
         }
         listViev.onDoubleClick {
             if (listViev.selectedItem != null){

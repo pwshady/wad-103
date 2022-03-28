@@ -59,6 +59,13 @@ class WADProjectsController() : Controller(){
     fun reCreateOpenProjectListName() : Int{
         var errorCode = 0
         try {
+            val dao = WADProjectsDao()
+            var allProjects = dao.getWADProjectsName("all_projects").first
+            for (name in WADStatus.stat.openProjectListName){
+                if(name !in allProjects){
+                    WADStatus.stat.openProjectListName.removeAll{it == name}
+                }
+            }
             for (name in WADStatus.stat.openProjectList.map { it.name }){
                 WADStatus.stat.openProjectListName.removeAll{it == name}
             }
@@ -81,13 +88,21 @@ class WADProjectsController() : Controller(){
         }
     }
 
-    fun closeProject(text: String) : Int{
+    fun closeProject(name: String) : Int{
         val dao = WADProjectsDao()
-        val result = dao.deleteWADProject(text, "open_projects")
+        val result = dao.deleteWADProject(name, "open_projects")
         if (result == 0){
-            WADStatus.stat.openProjectList.removeAll{ it.name == text}
-            WADStatus.stat.wadProjectList.removeAll{ it.projectName == text}
+            WADStatus.stat.openProjectList.removeAll{ it.name == name}
+            WADStatus.stat.wadProjectList.removeAll{ it.projectName == name}
+            reCreateOpenProjectListName()
         }
+        return result
+    }
+
+    fun deleteProject(name : String) : Int{
+        val dao = WADProjectsDao()
+        val result = dao.deleteWADProject(name, "all_projects")
+        reCreateOpenProjectListName()
         return result
     }
 

@@ -58,21 +58,23 @@ class WADProjectViev(wadProject: WADProject) : Fragment() {
 
                 }
             }
+
             progressbar {
                 thread {
                     var i = 0
-                    while (true){
-                        Platform.runLater{ progress = i.toDouble() /10}
+                    while (true) {
+                        Platform.runLater { progress = i.toDouble() / 10 }
                         Thread.sleep(1000)
-                        if(WADStatus.stat.wadProjectList.last{it.projectName == wadProject.name}.run){
+                        if (WADStatus.stat.wadProjectList.lastOrNull { it.projectName == wadProject.name }?.run == true) {
                             i++
                         }
-                        if (i == 10){
+                        if (i == 10) {
                             i = 0
                         }
                     }
                 }
             }
+
             label("Status:")
             statusLabel = label("Stop")
 
