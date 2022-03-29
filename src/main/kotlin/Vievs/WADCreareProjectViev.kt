@@ -167,8 +167,7 @@ class WADCreateProjectViev() : Fragment() {
             button("Create") {
                 setOnAction {
                     var wadProject = WADProject(0, name.text, domenName.text, to.text, from.text, directory.text)
-                    val dao = WADProjectsDao()
-                    dao.addProject(wadProject, "all_projects")
+                    wadProjectsController.creteProject(wadProject)
                     val dir = File(directory.text)
                     dir.mkdirs()
                     wadProjectsController.openProject(wadProject.name)

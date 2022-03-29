@@ -2,6 +2,7 @@ package Vievs
 
 import javafx.scene.Parent
 import javafx.scene.control.TextField
+import jdbc.WADProjectsDao
 import tornadofx.*
 import java.awt.Button
 
@@ -10,7 +11,8 @@ class WADProjectRightViev() : View() {
         var from : TextField by singleAssign()
         button("t1"){
             action {
-                from.text = "gg"
+                val dao = WADProjectsDao()
+                println( dao.createTable("test2", "files"))
             }
         }
         from = textfield {  }

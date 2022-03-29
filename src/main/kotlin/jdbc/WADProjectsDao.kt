@@ -139,7 +139,31 @@ class WADProjectsDao {
             val connection = DriverManager.getConnection(url, user, pass)
             val stmt: PreparedStatement = connection.prepareStatement("delete from ${tableName} where name=?")
             stmt.setString(1, name)
-            println("ll")
+            stmt.executeUpdate()
+        } catch (e : Exception){
+            errorCode = 1
+        }
+        return errorCode
+    }
+
+    fun createTable(projectName : String, tableName : String) : Int
+    {
+        var errorCode = 0
+        val name = "${projectName}_${tableName}"
+        try {
+            Class.forName(driver)
+            val connection = DriverManager.getConnection(url, user, pass)
+            val stmt : PreparedStatement = connection.prepareStatement(
+                "CREATE TABLE wad.${name} (\n" +
+                    "\tid INT auto_increment NOT NULL,\n" +
+                    "\turl varchar(256) NOT NULL,\n" +
+                    "\t`timestamp` varchar(14) NOT NULL,\n" +
+                    "\tmimetype varchar(100) NOT NULL,\n" +
+                    "\tcode INT NOT NULL,\n" +
+                    "\t`length` INT NOT NULL,\n" +
+                    "\tCONSTRAINT test1_files_pk PRIMARY KEY (id)\n" +
+                    ");"
+            )
             stmt.executeUpdate()
         } catch (e : Exception){
             errorCode = 1

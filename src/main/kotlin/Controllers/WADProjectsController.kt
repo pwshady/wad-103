@@ -75,6 +75,14 @@ class WADProjectsController() : Controller(){
         return errorCode
     }
 
+    fun creteProject(wadProject : WADProject) : Int
+    {
+        val dao = WADProjectsDao()
+        dao.addProject(wadProject, "all_projects")
+        dao.createTable(wadProject.name, "files")
+        return 0
+    }
+
     fun openProject(text : String) : Int{
         val dao = WADProjectsDao()
         var result = dao.getWADProject(text, "all_projects")
