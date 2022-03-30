@@ -17,8 +17,7 @@ class WADProjectsDao {
         user = properties["user"].toString()
         pass = properties["pass"].toString()
     }
-    fun saveWADProject(wadProject: WADProject ) : Unit = TODO()
-    fun updateWADProject(wadProject: WADProject ) : Unit = TODO()
+
     fun getWADProjectsName(table_name : String) : Pair<List<String>, Int>
     {
         var resultList = mutableListOf<String>()
@@ -67,6 +66,22 @@ class WADProjectsDao {
         return errorCode
     }
 
+    fun updateWADProjectResumeKey(wadProject: WADProject, tableName : String) : Int
+    {
+        var errorCode = 0
+        try {
+            Class.forName(driver)
+            val connection = DriverManager.getConnection(url, user, pass)
+            val stmt: PreparedStatement = connection.prepareStatement("update ${tableName} set resume_key = ? where name = ?")
+            stmt.setString(1, wadProject.resumeKey)
+            stmt.setString(2, wadProject.name)
+            stmt.executeUpdate()
+        } catch (e : Exception) {
+            errorCode = 1
+        }
+        return errorCode
+    }
+
     fun getWADProjects(tableName: String) : Pair<List<WADProject>,Int>
     {
         var resultList = mutableListOf<WADProject>()
@@ -100,7 +115,8 @@ class WADProjectsDao {
         return Pair(resultList, errorCode)
     }
 
-    fun getWADProject(name : String, tableName : String) : Pair<WADProject, Int>{
+    fun getWADProject(name : String, tableName : String) : Pair<WADProject, Int>
+    {
         var wad = WADProject(0, "", "", "", "", "")
         var errorCode = 0
         try {
@@ -166,6 +182,41 @@ class WADProjectsDao {
             )
             stmt.executeUpdate()
         } catch (e : Exception){
+            errorCode = 1
+        }
+        return errorCode
+    }
+
+    fun deleteTable(projectName : String, tableName : String) : Int
+    {
+        var errorCode = 0
+        val name = "${projectName}_${tableName}"
+        try {
+            Class.forName(driver)
+            val connection = DriverManager.getConnection(url, user, pass)
+            val stmt : PreparedStatement = connection.prepareStatement("DROP TABLE wad.${name};")
+            stmt.executeUpdate()
+        } catch (e : Exception){
+            errorCode = 1
+        }
+        return errorCode
+    }
+
+    fun addFilesList(projectName: String, fileList : List<String>) : Int
+    {
+        var errorCode = 0
+        val tableName = "${projectName}_files"
+        try {
+            Class.forName(driver)
+            val connection = DriverManager.getConnection(url, user, pass)
+            val stmt: PreparedStatement = connection.prepareStatement("insert into ${tableName} (id, url, timestamp, code, length) values (?, ?, ?, ?, ?);")
+            stmt.setInt(1, 1)
+            stmt.setString(2, "t1")
+            stmt.setString(3, "t2")
+            stmt.setInt(4, 2)
+            stmt.setInt(5, 3)
+            stmt.executeUpdate()
+        } catch (e : Exception) {
             errorCode = 1
         }
         return errorCode

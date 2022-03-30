@@ -110,6 +110,7 @@ class WADProjectsController() : Controller(){
     fun deleteProject(name : String) : Int{
         val dao = WADProjectsDao()
         val result = dao.deleteWADProject(name, "all_projects")
+        dao.deleteTable(name, "files")
         reCreateOpenProjectListName()
         return result
     }
