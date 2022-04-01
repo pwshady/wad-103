@@ -33,6 +33,7 @@ class WADProjectsDao {
                 wad = rs.getString(1)
                 resultList.add(wad)
             }
+            connection.close()
         } catch (e : Exception) {
             errorCode = 1
         }
@@ -60,6 +61,7 @@ class WADProjectsDao {
             stmt.setInt(11, wadProject.autopars)
             stmt.setInt(12, wadProject.fileLimit)
             stmt.executeUpdate()
+            connection.close()
         } catch (e : Exception) {
             errorCode = 1
         }
@@ -76,6 +78,7 @@ class WADProjectsDao {
             stmt.setString(1, wadProject.resumeKey)
             stmt.setString(2, wadProject.name)
             stmt.executeUpdate()
+            connection.close()
         } catch (e : Exception) {
             errorCode = 1
         }
@@ -109,6 +112,7 @@ class WADProjectsDao {
                 )
                 resultList.add(wad)
             }
+            connection.close()
         } catch (e : Exception){
             errorCode = 1
         }
@@ -141,8 +145,11 @@ class WADProjectsDao {
                     rs.getInt(12)
                 )
             }
+            connection.close()
         } catch (e : Exception){
             errorCode = 1
+        } finally {
+
         }
         return Pair(wad, errorCode)
     }
@@ -156,6 +163,7 @@ class WADProjectsDao {
             val stmt: PreparedStatement = connection.prepareStatement("delete from ${tableName} where name=?")
             stmt.setString(1, name)
             stmt.executeUpdate()
+            connection.close()
         } catch (e : Exception){
             errorCode = 1
         }
@@ -181,6 +189,7 @@ class WADProjectsDao {
                     ");"
             )
             stmt.executeUpdate()
+            connection.close()
         } catch (e : Exception){
             errorCode = 1
         }
@@ -196,29 +205,37 @@ class WADProjectsDao {
             val connection = DriverManager.getConnection(url, user, pass)
             val stmt : PreparedStatement = connection.prepareStatement("DROP TABLE wad.${name};")
             stmt.executeUpdate()
+            connection.close()
         } catch (e : Exception){
             errorCode = 1
         }
         return errorCode
     }
 
-    fun addFilesList(projectName: String, fileList : List<String>) : Int
+    fun addFilesList(projectName: String, fileList : List<String>) : Pair<Int,Long>
     {
         var errorCode = 0
+        var allLength : Long = 0
         val tableName = "${projectName}_files"
         try {
-            Class.forName(driver)
-            val connection = DriverManager.getConnection(url, user, pass)
-            val stmt: PreparedStatement = connection.prepareStatement("insert into ${tableName} (id, url, timestamp, code, length) values (?, ?, ?, ?, ?);")
-            stmt.setInt(1, 1)
-            stmt.setString(2, "t1")
-            stmt.setString(3, "t2")
-            stmt.setInt(4, 2)
-            stmt.setInt(5, 3)
-            stmt.executeUpdate()
+            //Class.forName(driver)
+            //val connection = DriverManager.getConnection(url, user, pass)
+            //var stmt: PreparedStatement = connection.prepareStatement("insert into ${tableName} (url, timestamp, mimetype, code, length) values (?, ?, ?, ?, ?);")
+            for (element in fileList){
+            //    val fileData = element.split(" ")
+            //    allLength += fileData[4].toLong()
+            //    stmt.setString(1, fileData[1])
+            //    stmt.setString(2, fileData[0])
+            //    stmt.setString(3, fileData[2])
+            //    stmt.setInt(4, fileData[3].toIntOrNull() ?: 0)
+            //    stmt.setInt(5, fileData[4].toInt())
+            //    stmt.addBatch()
+            }
+            //stmt.executeBatch()
+            //connection.close()
         } catch (e : Exception) {
             errorCode = 1
         }
-        return errorCode
+        return Pair(errorCode, allLength)
     }
 }

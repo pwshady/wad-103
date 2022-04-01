@@ -12,7 +12,7 @@ class WADProjectRightViev() : View() {
         button("t1"){
             action {
                 val dao = WADProjectsDao()
-                println( dao.createTable("test2", "files"))
+                println( )
             }
         }
         from = textfield {  }

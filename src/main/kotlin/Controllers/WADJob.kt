@@ -8,7 +8,8 @@ import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import tornadofx.onChange
-
+import tornadofx.seconds
+import java.util.*
 
 
 class WADJob(wadProject: WADProject) {
@@ -43,32 +44,52 @@ class WADJob(wadProject: WADProject) {
                 .addConverterFactory(ScalarsConverterFactory.create()).addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .build()
             var allFiles = 0
+            var allLength : Long = 0
             val service = retrofit.create(WADGetFileListService::class.java)
-            val dao = WADProjectsDao()
+            var dao = WADProjectsDao()
+            println(Date())
+            var wadProjectGet = Pair(WADProject(0,"","","","",""),1)
             while (flag) {
-                var wadProject = dao.getWADProject(name, "open_projects").first
-                val result = service.getFileList("${wadProject.domenName}*",3, wadProject.resumeKey, wadProject.from, wadProject.to, wadProject.fileType).await()
+                do {
+                    wadProjectGet = dao.getWADProject(name, "open_projects")
+                    if (wadProjectGet.second == 1){
+                        println("error db")
+                        flag = false
+                        delay(1000L)
+                        dao = WADProjectsDao()
+                        break
+                    }
+                } while (wadProjectGet.second != 0)
+                var wadProject = wadProjectGet.first
+                val result = service.getFileList("${wadProject.domenName}*",10000, wadProject.resumeKey, wadProject.from, wadProject.to, wadProject.fileType).await()
                 var fileList = result.split("\n")
                 wadProject.resumeKey = fileList[fileList.size-2]
-                dao.updateWADProjectResumeKey(wadProject,"all_projects")
-                dao.updateWADProjectResumeKey(wadProject,"open_projects")
-                allFiles += fileList.size - 3
                 if (fileList[fileList.size - 3] == ""){
-                    //println("prod")
-                    //println(allFiles)
                     fileList = fileList.subList(0,fileList.size - 3)
+                    allFiles += fileList.size
+                    println("prod")
+                    println(allFiles)
                 }else{
-                    //println("end")
-                    //println("all files: " + (allFiles + 2).toString() )
                     fileList = fileList.subList(0,fileList.size - 1)
                     wadProject.resumeKey = ""
                     flag = false
+                    allFiles += fileList.size
+                    println("end")
+                    println("all files: " + (allFiles + 2).toString() )
                 }
-                println(fileList[0])
-                println(fileList[1])
+                val resultSaveFile = dao.addFilesList(wadProject.name, fileList)
+                allLength += resultSaveFile.second
+                println(resultSaveFile.first)
+                if(resultSaveFile.first == 1){
+                    flag = false
+                }
                 dao.updateWADProjectResumeKey(wadProject,"all_projects")
                 dao.updateWADProjectResumeKey(wadProject,"open_projects")
+                println("all length: ${allLength}")
+                println(wadProject.resumeKey)
             }
+
+            println(Date())
             WADStatus.stat.wadProjectList.last{it.projectName == name}.run = false
         }
     }
